@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myapp
+  namespace: default
+spec: #这是控制器的spec
+  replicas: 2 #几个副本
+  selector:   #查看帮助:,标签选择器。 kubectl explain rs.spec.selector
+    matchLabels:
+      app: myapp
+      release: canary
+  template:  # 查看帮助：模板 kubectl explain rs.spec.template
+    metadata: # kubectl explain rs.spec.template.metadata
+      name: myapp-pod
+      labels:  #必须符合上面定义的标签选择器selector里面的内容
+        app: myapp
+        release: canary
+        environment: qa
+    spec: #这是pod的spec
+      containers:
+      - name: myapp-container
+        image: ikubernetes/myapp:v1
+        ports: 
+        - name: http
+          containerPort: 80

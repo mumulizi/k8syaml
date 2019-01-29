@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-cm-3
+  namespace: default
+  labels:
+    app: myapp  #kv格式的，也可以用花括号表示
+    tier: frontend #定义所属的层次
+  annotations:
+    chenzx.com/created-by: "cluster-admin" #这是注解的键值对
+spec:
+  containers: 
+  - name: myapp  #前面的-号表示这是一个列表格式的,也可以用中括号表示
+    image: ikubernetes/myapp:v1 
+    ports:
+    - name: http
+      containerPort: 80
+    volumeMounts:
+    - name: nginxconf
+      mountPath: /etc/nginx/conf.d/
+      readOnly: true
+  volumes:
+  - name: nginxconf
+    configMap:
+      name: nginx-www

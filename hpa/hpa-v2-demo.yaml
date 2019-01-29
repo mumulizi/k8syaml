@@ -1,0 +1,20 @@
+apiVersion: autoscaling/v2beta1   #从这可以看出是hpa v2版本
+kind: HorizontalPodAutoscaler
+metadata:
+  name: myapp-hpa-v2
+spec:
+  scaleTargetRef: #根据什么指标来做评估压力
+    apiVersion: apps/v1 #对谁来做自动扩展
+    kind: Deployment
+    name: myapp
+  minReplicas: 1 #最少副本数量
+  maxReplicas: 10
+  metrics: #表示依据哪些指标来进行评估
+  - type: Resource #表示基于资源进行评估
+    resource: 
+      name: cpu
+      targetAverageUtilization: 55 #表示pod cpu使用率超过55%，就自动水平扩展pod个数
+  - type: Resource
+    resource:
+      name: memory #我们知道hpa v1版本只能根据cpu来进行评估，而到了我们的hpa v2版本就可以根据内存来进行评估了
+      targetAverageValue: 50Mi #表示pod内存使用超过50M，就自动水平扩展pod个数
